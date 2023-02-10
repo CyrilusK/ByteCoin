@@ -1,14 +1,6 @@
-//
-//  ViewController.swift
-//  ByteCoin
-//
-//  Created by Angela Yu on 11/09/2019.
-//  Copyright © 2019 The App Brewery. All rights reserved.
-//
-
 import UIKit
 
-let coinManager = CoinManager()
+var coinManager = CoinManager()
 
 class ViewController: UIViewController {
     
@@ -21,6 +13,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         currencyPicker.dataSource = self
         currencyPicker.delegate = self
+        coinManager.delegate = self
     }
 
 }
@@ -49,6 +42,22 @@ extension ViewController: UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        currencyLabel.text = coinManager.currencyArray[row]
         coinManager.getCoinPrice(for: coinManager.currencyArray[row])
     }
+}
+
+//MARK: - CoinManagerDelegate
+
+extension ViewController: CoinManagerDelegate {
+    func didUpdateCoin(_ coinManager: CoinManager, _ rape: Double) {
+        DispatchQueue.main.async {
+            self.bitcoinLabel.text = String(format: "%.2f", rape)
+        }
+    }
+    
+    func didFailwithError(_ error: Error) {
+        print(error)
+    }
+    
 }
